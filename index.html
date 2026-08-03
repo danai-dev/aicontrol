@@ -141,14 +141,15 @@
     async function connectBluetooth() {
     try {
         document.getElementById("status").innerText = "กำลังค้นหาอุปกรณ์ micro:bit...";
-        
-        // ปรับ filters ให้ค้นหาทั้ง micro:bit และ BBC micro:bit
+
+        // ใช้ acceptAllDevices: true เพื่อให้แสดงอุปกรณ์ Bluetooth ทั้งหมดที่ปล่อยสัญญาณอยู่
+        // และใส่ UART Service UUID ไว้ใน optionalServices เพื่อให้เรียกใช้งานได้หลังเชื่อมต่อ
         bluetoothDevice = await navigator.bluetooth.requestDevice({
-            filters: [
-                { namePrefix: 'micro:bit' },
-                { namePrefix: 'BBC micro:bit' }
-            ],
-            optionalServices: ['6e400001-b5a3-f393-e0a9-e50e24dcca9e'] // UART Service UUID
+            acceptAllDevices: true,
+            optionalServices: [
+                '6e400001-b5a3-f393-e0a9-e50e24dcca9e', // UART Service UUID
+                '0000e040-0000-1000-8000-00805f9b34fb'  // Nordic UART Service (สำรอง)
+            ]
         });
 
 
