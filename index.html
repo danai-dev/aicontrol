@@ -139,14 +139,18 @@
 
     // 2. เชื่อมต่อ Web Bluetooth เข้ากับ micro:bit
     async function connectBluetooth() {
-        try {
-            document.getElementById("status").innerText = "กำลังค้นหาอุปกรณ์ micro:bit...";
-            
-            // สแกนหาอุปกรณ์ที่มี UART Service
-            bluetoothDevice = await navigator.bluetooth.requestDevice({
-                filters: [{ namePrefix: 'micro:bit' }],
-                optionalServices: [UART_SERVICE_UUID]
-            });
+    try {
+        document.getElementById("status").innerText = "กำลังค้นหาอุปกรณ์ micro:bit...";
+        
+        // ปรับ filters ให้ค้นหาทั้ง micro:bit และ BBC micro:bit
+        bluetoothDevice = await navigator.bluetooth.requestDevice({
+            filters: [
+                { namePrefix: 'micro:bit' },
+                { namePrefix: 'BBC micro:bit' }
+            ],
+            optionalServices: ['6e400001-b5a3-f393-e0a9-e50e24dcca9e'] // UART Service UUID
+        });
+
 
             const server = await bluetoothDevice.gatt.connect();
             const service = await server.getPrimaryService(UART_SERVICE_UUID);
